@@ -3,6 +3,15 @@ Repository for ACL2024 Findings: [DELL: Generating Reactions and Explanations fo
 
 All resources are available on [Google Drive](https://drive.google.com/drive/folders/1nPo6x3AY7Kt1Nb9DUUvBAhpMwad3zhvq?usp=sharing)
 
+
+# What's new in this repo? 
+
+This is the forked repo with new udpates: 
+1. Fix the training split under expert as train:valid:test = 7:1:2, remove the usage of 3 split files.
+3. According to the available proxy, only utilize the remaining available proxy tasks (content.py, search_entity_from_wiki.py, retrieval.py, stance.py, response.py) for fake news detection.
+4. Fix bugs in entity/wiki proxy (Some news has None entities returned).
+5. Optimize the save_state_dict() and load_state_dict() of ./expert/train.py, filtered out the fixed-param tokenizer and lm.
+
 # Basic Usage
 
 DELL mainly contains three core parts: (i) **D**iverse Reaction Generation; (ii) **E**xplainable Proxy Tasks; (iii) **LL**M-Based Expert Ensemble.  
@@ -72,6 +81,16 @@ python train.py --task [task] --dataset_name [dataset_name] --text_augmentation 
 --graph_augmention are shorts for comment-based proxy tasks:
 
 [stance] for stance detection and [relation] for response characterization
+
+### According to the paper authors' implementation, I think they only use one proxy task in each traning, so if I run on [twitter19], the command is:
+
+```
+python train.py --task 'TASK1' --dataset_name 'twitter19' 
+python train.py --task 'TASK1' --dataset_name 'twitter19'  --text_augmentation 'emotion'
+python train.py --task 'TASK1' --dataset_name 'twitter19'  --graph_augmentation 'stance'
+python train.py --task 'TASK1' --dataset_name 'twitter19'  --text_augmentation 'retrieval'
+python train.py --task 'TASK1' --dataset_name 'twitter19'  --graph_augmentation 'relation'
+```
 
 Then, you can obtain the predictions of each expert by running:
 ```
