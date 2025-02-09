@@ -92,7 +92,7 @@ def train(train_loader, val_loader, test_loader, name):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-5)
 
     best_acc = 0
-    best_state = model.state_dict()
+    best_state = model.return_state_dict()
     for key, value in best_state.items():
         best_state[key] = value.clone()
     no_up = 0
@@ -102,7 +102,8 @@ def train(train_loader, val_loader, test_loader, name):
         if acc > best_acc:
             best_acc = acc
             no_up = 0
-            for key, value in model.state_dict().items():
+            best_state = model.return_state_dict()
+            for key, value in best_state.items():
                 best_state[key] = value.clone()
         else:
             if _ >= 8:
@@ -111,7 +112,7 @@ def train(train_loader, val_loader, test_loader, name):
             break
         print('train loss: {:.2f}, train metric: {:.2f}, now best val metric: {:.2f}'.
               format(train_loss, train_acc, best_acc))
-    model.load_state_dict(best_state)
+    model.my_load_state_dict(best_state)
     acc = validation(model, test_loader, 0)
     print('train {} done. val metric: {:.2f}, test metric: {:.2f}'.format(name, best_acc, acc))
     cnt = 0
@@ -125,9 +126,10 @@ def train(train_loader, val_loader, test_loader, name):
 
 def main():
     dataset = NewsDataset(task, dataset_name)
-    train_indices = json.load(open(f'../data/split/{task}_{dataset_name}/train.json'))
-    val_indices = json.load(open(f'../data/split/{task}_{dataset_name}/val.json'))
-    test_indices = json.load(open(f'../data/split/{task}_{dataset_name}/test.json'))
+    dataset_ids = range(len(dataset))
+    train_indices = dataset_ids[:int(len(dataset)*0.7)]
+    val_indices = dataset_ids[int(len(dataset)*0.7): int(len(dataset)*0.8)]
+    test_indices = dataset_ids[int(len(dataset)*0.8):]
 
     train_sampler = MySampler(train_indices, shuffle=True)
     val_sampler = MySampler(val_indices, shuffle=False)

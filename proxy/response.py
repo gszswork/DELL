@@ -5,9 +5,8 @@ from utils import get_response
 
 
 dataset_names = {
-    'TASK1': ['LLM-mis', 'Pheme'],
-    'TASK2': ['MFC', 'SemEval-23F'],
-    'TASK3': ['Generated', 'SemEval-20', 'SemEval-23P']
+    'TASK1': ['twitter19', 'weibo19'],
+
 }
 
 
@@ -28,8 +27,6 @@ def get_one_response(data):
 
 
 def main():
-    if not os.path.exists('../data/proxy/response/'):
-        os.mkdir('../data/proxy/response/')
     for task in dataset_names:
         for dataset in dataset_names[task]:
             network_dir = f'../data/networks/{task}_{dataset}'

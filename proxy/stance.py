@@ -5,9 +5,8 @@ from utils import get_stance
 
 
 dataset_names = {
-    'TASK1': ['LLM-mis', 'Pheme'],
-    'TASK2': ['MFC', 'SemEval-23F'],
-    'TASK3': ['Generated', 'SemEval-20', 'SemEval-23P']
+    'TASK1': ['twitter19', 'weibo19'],
+
 }
 
 
@@ -28,8 +27,6 @@ def get_one_stance(data):
 
 
 def main():
-    if not os.path.exists('../data/proxy/stance/'):
-        os.mkdir('../data/proxy/stance/')
     for task in dataset_names:
         for dataset in dataset_names[task]:
             network_dir = f'../data/networks/{task}_{dataset}'

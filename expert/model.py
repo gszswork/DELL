@@ -121,6 +121,16 @@ class MyModel(nn.Module):
             self.loss_fn = multilabel_categorical_cross_entropy
 
     # tokenize text into input_ids
+
+    def return_state_dict(self):
+        state_dict = self.state_dict()
+        filtered_state_dict = {k: v for k, v in state_dict.items()
+                               if not (k.startswith('tokenizer') or k.startswith('lm'))}
+        return filtered_state_dict
+
+    def my_load_state_dict(self, state_dict):
+        self.load_state_dict(state_dict, strict=False)
+
     def tokenize(self, data):
         tokens = []
         for item in data:

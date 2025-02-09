@@ -6,9 +6,18 @@ from model import MyModel
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score
 from tqdm import tqdm
+from argparse import ArgumentParser
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+parser = ArgumentParser()
+parser.add_argument('--task', type=str)
+parser.add_argument('--dataset_name', type=str)
+parser.add_argument('--text_augmentation', type=str)
+parser.add_argument('--graph_augmentation', type=str)
+args = parser.parse_args()
+
 
 
 def get_metric(y_true, y_pred):
@@ -48,11 +57,11 @@ def validation(model, loader, epoch, task):
 
 def main():
     # modify task and dataset_name
-    task = 'TASK3'
-    dataset_name = 'SemEval-23P'
+    task = args.task
+    dataset_name = args.dataset_name
     # modify the expert
-    text_augmentation = None
-    graph_augmentation = 'relation'
+    text_augmentation = args.text_augmentation
+    graph_augmentation = args.graph_augmentation
 
     # load the checkpoints that achieves the best validation performance
     checkpoints_dir = 'checkpoints/{}_{}_{}_{}'.format(task, dataset_name, text_augmentation, graph_augmentation)
@@ -62,8 +71,10 @@ def main():
     checkpoint = torch.load('{}/{}'.format(checkpoints_dir, checkpoint_path))
 
     dataset = NewsDataset(task, dataset_name)
-    test_indices = json.load(open(f'../data/split/{task}_{dataset_name}/test.json'))
-    val_indices = json.load(open(f'../data/split/{task}_{dataset_name}/val.json'))
+    dataset_ids = range(len(dataset))
+    train_indices = dataset_ids[:int(len(dataset)*0.7)]
+    val_indices = dataset_ids[int(len(dataset)*0.7): int(len(dataset)*0.8)]
+    test_indices = dataset_ids[int(len(dataset)*0.8):]
     # It is recommended to set it the same as during training
     batch_size = 1
 
@@ -78,7 +89,7 @@ def main():
 
     if not os.path.exists('results'):
         os.mkdir('results')
-    model.load_state_dict(checkpoint)
+    model.my_load_state_dict(checkpoint)
     metric, out, pred, label = validation(model, test_loader, 0, task)
     print('test: ', metric)
     torch.save([out, pred, label], f'results/{task}_{dataset_name}_{text_augmentation}_{graph_augmentation}_test.pt')

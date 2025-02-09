@@ -7,20 +7,16 @@ from tqdm import tqdm
 
 
 dataset_names = {
-    'TASK1': ['LLM-mis', 'Pheme'],
-    'TASK2': ['MFC', 'SemEval-23F'],
-    'TASK3': ['Generated', 'SemEval-20', 'SemEval-23P']
+    'TASK1': ['twitter19', 'weibo19'],
 }
-os.environ['http_proxy'] = 'http://127.0.0.1:15236'
-os.environ['https_proxy'] = 'http://127.0.0.1:15236'  # set the http proxy information
+#os.environ['http_proxy'] = 'http://127.0.0.1:15236'
+#os.environ['https_proxy'] = 'http://127.0.0.1:15236'  # set the http proxy information
 
 
 def main():
     for task in dataset_names:
         for dataset in dataset_names[task]:
             data = json.load(open(f'../data/proxy/entity/{task}_{dataset}.json'))
-            if not os.path.exists('../data/proxy/entity_from_wiki'):
-                os.mkdir('../data/proxy/entity_from_wiki')
             save_dir = f'../data/proxy/entity_from_wiki/{task}_{dataset}.json'
             if os.path.exists(save_dir):
                 out = json.load(open(save_dir))
@@ -35,6 +31,7 @@ def main():
                 for _ in item:
                     try:
                         wiki_item = wikipedia.search(_)[0]
+                        print(wiki_item)
                     except Exception as e:
                         item_res.append(None)
                         continue

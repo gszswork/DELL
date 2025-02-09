@@ -84,8 +84,8 @@ class NewsDataset(Dataset):
         #  load the output of each proxy task
         #  content-based proxy task
         sentiment = json.load(open(f'{root}/proxy/sentiment/{task}_{dataset_name}.json'))
-        framing = json.load(open(f'{root}/proxy/framing/{task}_{dataset_name}.json'))
-        propaganda = json.load(open(f'{root}/proxy/propaganda/{task}_{dataset_name}.json'))
+        # framing = json.load(open(f'{root}/proxy/framing/{task}_{dataset_name}.json'))
+        # propaganda = json.load(open(f'{root}/proxy/propaganda/{task}_{dataset_name}.json'))
         retrieval = json.load(open(f'{root}/proxy/retrieval/{task}_{dataset_name}.json'))
 
         #  comment/graph-based proxy task
@@ -118,8 +118,8 @@ class NewsDataset(Dataset):
             self.data.append({
                 'text': data[index][0],
                 'sentiment': sentiment[index],
-                'framing': framing[index],
-                'propaganda': propaganda[index],
+                # 'framing': framing[index],
+                # 'propaganda': propaganda[index],
                 'retrieval': retrieval[index],
                 'graph_info': graph_info[index],
                 'label': labels[index],
@@ -143,8 +143,8 @@ def my_collate_fn(batch):
     for item in batch:
         text.append(item['text'])
         sentiment.append(item['sentiment'])
-        framing.append(item['framing'])
-        propaganda.append(item['propaganda'])
+        # framing.append(item['framing'])
+        # propaganda.append(item['propaganda'])
         retrieval.append(item['retrieval'])
         label.append(item['label'])
         graph_info.append(item['graph_info'])
@@ -152,8 +152,8 @@ def my_collate_fn(batch):
     return {
         'text': text,
         'emotion': sentiment,
-        'framing': framing,
-        'propaganda': propaganda,
+        #'framing': framing,
+        #'propaganda': propaganda,
         'retrieval': retrieval,
         'label': label,
         'graph_info': graph_info,
