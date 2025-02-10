@@ -25,7 +25,7 @@ def main():
                 sentiment = sentiment_detection(news_article)
                 out.append(sentiment)
                 json.dump(out, open(save_dir, 'w'))
-            '''
+          
             #  run the framing detection proxy task
             save_dir = f'../data/proxy/framing/{task}_{dataset}.json'
             if os.path.exists(save_dir):
@@ -51,7 +51,7 @@ def main():
                 propaganda = propaganda_detection(news_article)
                 out.append(propaganda)
                 json.dump(out, open(save_dir, 'w'))
-            '''
+            
             #  find the helpful entities for understanding the news
             save_dir = f'../data/proxy/entity/{task}_{dataset}.json'
             if os.path.exists(save_dir):
